@@ -77,18 +77,18 @@ for apk in $files ; do
     # use -ns (no static) to ignore static files
     # use -layoutmode none to ignore UI elements as sources
     cmd="java -Xms10536m -Xmx20660m -jar $FD_JAR -a $apk -p $ANDROID_JAR -s $SS_LIST -ns --layoutmode none -o $OUT_DIR/$apk_name.xml"
-    printf '[%s] Beginning analysis of %s\n' "$(date)" "$apk_name"
+    printf '[%s] Beginning analysis of %s\n' "$(date +'%b-%d-%y %T' )" "$apk_name"
     start=$(date +%s) # start timer
 
     # handle timeout  
     if [[ "$TIME_OUT" -gt 0 ]] ; then
         timeout "$TIME_OUT"m $cmd 2> $OUT_DIR/$apk_name.out
-        test $? -eq 124 && echo "Analysis timed out after $TIME_OUT minutes" && continue
+        test $? -eq 124 && printf '[%s] Analysis timed out after %s minutes for %s\n' "$(date +'%b-%d-%y %T')" "$TIME_OUT" "$apk_name" && continue
     else
         $cmd 2> $OUT_DIR/$apk_name.out
     fi
 
     end=$(date +%s) # end timer
     runtime=$((end-start)) 
-    printf '[%s] Completed analysis of %s in %s seconds\n' "$(date)" "$apk_name" $runtime
+    printf '[%s] Completed analysis of %s in %s seconds\n' "$(date +'%b-%d-%y %T' )" "$apk_name" $runtime
 done
